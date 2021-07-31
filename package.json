@@ -1,0 +1,20 @@
+{
+  "name": "cryptopals-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "AlbertoSpinella",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "fastify": "^3.19.2",
+    "fastify-swagger": "^4.8.3",
+    "node-fetch": "^2.6.1"
+  }
+}
