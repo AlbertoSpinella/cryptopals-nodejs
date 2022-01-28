@@ -20,6 +20,36 @@ const extendKey = (key, length) => {
     }
 };
 
+const calculateScore = (str) => {
+    try {
+        let score = 0;
+        for (let i=0; i<str.length; i++) {
+            if (str[i] in frequencies) score += frequencies[str[i]];
+        }
+        return score;
+    } catch (err) {
+        throw err;
+    }
+};
+
+const stringToBits = (str) => {
+    try {
+        const toBit1 = [];
+        for (let i=0; i<str.length; i++) {
+            const byte = str.charCodeAt(i).toString(2);
+            let padded = "";
+            if (byte.length < 8) {
+                for (let j=0; j<8%byte.length; j++) padded += "0";
+                padded += byte;
+            }
+            toBit1.push(padded);
+        } 
+        return toBit1.join("");
+    } catch (err) {
+        throw err;
+    }
+};
+
 export const xorBetweenHex = (hex1, hex2) => {
     const raw1 = Buffer.from(hex1, "hex");
     const raw2 = Buffer.from(hex2, "hex");
@@ -31,14 +61,6 @@ export const xorBetweenHex = (hex1, hex2) => {
         else result.push(xor);
     }
     return result;
-};
-
-export const calculateScore = (str) => {
-    let score = 0;
-    for (let i=0; i<str.length; i++) {
-        if (str[i] in frequencies) score += frequencies[str[i]];
-    }
-    return score;
 };
 
 export const singleByteXOR = (str) => {
@@ -89,6 +111,39 @@ export const repeatingKeyXOR = (str, key) => {
         const keyToHex = Buffer.from(extendedKey, "ascii");
         const result = xorBetweenHex(strToHex, keyToHex);
         return result;
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const hammingDistance = (str1, str2) => {
+    try {
+        let distance = 0;
+        const toBit1 = stringToBits(str1);
+        const toBit2 = stringToBits(str2);
+        for (let i=0; i<toBit1.length; i++) {
+            if (toBit1[i] != toBit2[i]) distance++;
+        }
+        return distance;
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const transposeBlocks = (blocks) => {
+    try {
+        const transposed = [];
+        const partials = {};
+        for (const block of blocks) {
+            for (let i=0; i<block.length; i++) {
+                if (!partials[i]) partials[i] = block[i];
+                else partials[i] += block[i];
+            }
+        }
+        for (const partial of Object.keys(partials)) {
+            transposed.push(partials[partial]);
+        }
+        return transposed;
     } catch (err) {
         throw err;
     }
