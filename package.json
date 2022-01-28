@@ -8,7 +8,9 @@
     "s1-c1": "node ./set1/challenge1.js",
     "s1-c2": "node ./set1/challenge2.js",
     "s1-c3": "node ./set1/challenge3.js",
-    "s1-c4": "node ./set1/challenge4.js"
+    "s1-c4": "node ./set1/challenge4.js",
+    "s1-c5": "node ./set1/challenge5.js",
+    "s1-c6": "node ./set1/challenge6.js"
   },
   "author": "AlbertoSpinella",
   "dependencies": {

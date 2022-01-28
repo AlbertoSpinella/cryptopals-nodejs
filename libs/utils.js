@@ -9,15 +9,11 @@ const frequencies = {
 };
 
 const extendKey = (key, length) => {
-    try {
-        let result = "";
-        for (let i=0; i<length; i++) {
-            result += key[i%key.length];
-        }
-        return result;
-    } catch (err) {
-        throw err;
+    const result = [];
+    for (let i=0; i<length; i++) {
+        result.push(key[i % key.length]);
     }
+    return result.join("");
 };
 
 const calculateScore = (str) => {
@@ -105,46 +101,34 @@ export const findBestOverallScore = (strings) => {
 };
 
 export const repeatingKeyXOR = (str, key) => {
-    try {
-        const extendedKey = extendKey(key, str.length);
-        const strToHex = Buffer.from(str, "ascii");
-        const keyToHex = Buffer.from(extendedKey, "ascii");
-        const result = xorBetweenHex(strToHex, keyToHex);
-        return result;
-    } catch (err) {
-        throw err;
-    }
+    const extendedKey = extendKey(key, str.length);
+    const strToHex = Buffer.from(str, "ascii");
+    const keyToHex = Buffer.from(extendedKey, "ascii");
+    const result = xorBetweenHex(strToHex, keyToHex);
+    return result;
 };
 
 export const hammingDistance = (str1, str2) => {
-    try {
-        let distance = 0;
-        const toBit1 = stringToBits(str1);
-        const toBit2 = stringToBits(str2);
-        for (let i=0; i<toBit1.length; i++) {
-            if (toBit1[i] != toBit2[i]) distance++;
-        }
-        return distance;
-    } catch (err) {
-        throw err;
+    let distance = 0;
+    const toBit1 = stringToBits(str1);
+    const toBit2 = stringToBits(str2);
+    for (let i=0; i<toBit1.length; i++) {
+        if (toBit1[i] != toBit2[i]) distance++;
     }
+    return distance;
 };
 
 export const transposeBlocks = (blocks) => {
-    try {
-        const transposed = [];
-        const partials = {};
-        for (const block of blocks) {
-            for (let i=0; i<block.length; i++) {
-                if (!partials[i]) partials[i] = block[i];
-                else partials[i] += block[i];
-            }
+    const transposed = [];
+    const partials = {};
+    for (const block of blocks) {
+        for (let i=0; i<block.length; i++) {
+            if (!partials[i]) partials[i] = block[i];
+            else partials[i] += block[i];
         }
-        for (const partial of Object.keys(partials)) {
-            transposed.push(partials[partial]);
-        }
-        return transposed;
-    } catch (err) {
-        throw err;
     }
+    for (const partial of Object.keys(partials)) {
+        transposed.push(partials[partial]);
+    }
+    return transposed;
 };
