@@ -21,78 +21,65 @@ const extendKey = (key, length) => {
 };
 
 export const xorBetweenHex = (hex1, hex2) => {
-    try {
-        const raw1 = Buffer.from(hex1, "hex");
-        const raw2 = Buffer.from(hex2, "hex");
-        let result = [];
-        
-        for (let i=0; i<raw1.length; i++) {
-            const xor = (raw1[i] ^ raw2[i]).toString(16);
-            if (xor.length < 2) result.push("0" + xor);
-            else result.push(xor);
-        }
-        return result;
-    } catch (err) {
-        throw  err;
+    const raw1 = Buffer.from(hex1, "hex");
+    const raw2 = Buffer.from(hex2, "hex");
+    let result = [];
+    
+    for (let i=0; i<raw1.length; i++) {
+        const xor = (raw1[i] ^ raw2[i]).toString(16);
+        if (xor.length < 2) result.push("0" + xor);
+        else result.push(xor);
     }
+    return result;
 };
 
 export const calculateScore = (str) => {
-    try {
-        let score = 0;
-        for (let i=0; i<str.length; i++) {
-            if (str[i] in frequencies) score += frequencies[str[i]];
-        }
-        return score;
-    } catch (err) {
-        throw err;
+    let score = 0;
+    for (let i=0; i<str.length; i++) {
+        if (str[i] in frequencies) score += frequencies[str[i]];
     }
+    return score;
 };
 
-export const findBestScore = (str) => {
-    try {
-        const raw = Buffer.from(str, "hex");
-        
-        const best = {
-            score: 0,
-            res: ""
-        }
-        
-        for (let ch=0; ch<256; ch++) {
-            let result = [];
-            for (let i=0; i<raw.length; i++) result.push(String.fromCharCode(raw[i] ^ ch));
-            const score = calculateScore(result);
-            if (score > best.score) {
-                best.score = score;
-                best.res = result;
-            }
-        }
-        return best;
-    } catch (err) {
-        throw err;
+export const singleByteXOR = (str) => {
+    const raw = Buffer.from(str, "hex");
+    
+    const best = {
+        score: 0,
+        res: ""
     }
+    
+    for (let ch=0; ch<256; ch++) {
+        let result = [];
+        raw.forEach(byte => {
+            const singleChar = String.fromCharCode(ch ^ byte);
+            result.push(singleChar);
+        });
+        const score = calculateScore(result);
+        if (score > best.score) {
+            best.score = score;
+            best.res = result;
+        }
+    }
+    return best;
 };
 
 export const findBestOverallScore = (strings) => {
-    try {
-        const lines = strings.split("\n");
+    const lines = strings.split("\n");
 
-        const bestOverall = {
-            score: 0,
-            res: ""
-        }
-
-        for (const line of lines) {
-            const best = findBestScore(line);
-            if (best.score > bestOverall.score) {
-                bestOverall.score = best.score;
-                bestOverall.res = best.res;
-            }
-        }
-        return bestOverall;
-    } catch (err) {
-        throw err;
+    const bestOverall = {
+        score: 0,
+        res: ""
     }
+
+    lines.forEach(line => {
+        const best = singleByteXOR(line);
+        if (best.score > bestOverall.score) {
+            bestOverall.score = best.score;
+            bestOverall.res = best.res;
+        }
+    });
+    return bestOverall;
 };
 
 export const repeatingKeyXOR = (str, key) => {

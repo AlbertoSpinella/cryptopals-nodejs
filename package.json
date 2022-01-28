@@ -5,16 +5,13 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "s1-c1": "node ./set1/challenge1.js",
+    "s1-c2": "node ./set1/challenge2.js",
+    "s1-c3": "node ./set1/challenge3.js",
+    "s1-c4": "node ./set1/challenge4.js"
   },
   "author": "AlbertoSpinella",
-  "devDependencies": {
-    "nodemon": "^2.0.12"
-  },
   "dependencies": {
-    "fastify": "^3.19.2",
-    "fastify-swagger": "^4.8.3",
     "node-fetch": "^2.6.1"
   }
 }
