@@ -13,7 +13,5 @@
     "s1-c6": "node set1.js 6"
   },
   "author": "AlbertoSpinella",
-  "dependencies": {
-    "node-fetch": "^2.6.1"
-  }
+  "dependencies": {}
 }

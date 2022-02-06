@@ -1,9 +1,8 @@
-import fetch from "node-fetch";
+import { promises as fs } from "fs";
 import { hammingDistance, bufInChunks, hammingDistanceBetweenBuffers, transposeBlocks, singleByteXOR, transposeResults } from "../libs/utils.js";
 
 export const set1Challenge6 = async () => {
-    const ch6Data = await fetch("https://cryptopals.com/static/challenge-data/6.txt");
-    const base64 = await ch6Data.text();
+    const base64 = await fs.readFile("./set1/6.txt", "ascii");
     const b64ToHex = Buffer.from(base64, "base64");
 
     const test1 = Buffer.from("this is a test", "ascii");
