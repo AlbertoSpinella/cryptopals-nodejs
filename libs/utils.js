@@ -28,24 +28,6 @@ const calculateScore = (str) => {
     }
 };
 
-const stringToBits = (str) => {
-    try {
-        const toBit1 = [];
-        for (let i=0; i<str.length; i++) {
-            const byte = str.charCodeAt(i).toString(2);
-            let padded = "";
-            if (byte.length < 8) {
-                for (let j=0; j<8%byte.length; j++) padded += "0";
-                padded += byte;
-            }
-            toBit1.push(padded);
-        } 
-        return toBit1.join("");
-    } catch (err) {
-        throw err;
-    }
-};
-
 export const xorBetweenHex = (hex1, hex2) => {
     const raw1 = Buffer.from(hex1, "hex");
     const raw2 = Buffer.from(hex2, "hex");
@@ -59,9 +41,7 @@ export const xorBetweenHex = (hex1, hex2) => {
     return result;
 };
 
-export const singleByteXOR = (str) => {
-    const raw = Buffer.from(str, "hex");
-    
+export const singleByteXOR = (raw) => {
     const best = {
         score: 0,
         res: ""
@@ -77,6 +57,7 @@ export const singleByteXOR = (str) => {
         if (score > best.score) {
             best.score = score;
             best.res = result;
+            best.key = ch.toString(16);
         }
     }
     return best;
@@ -91,10 +72,12 @@ export const findBestOverallScore = (strings) => {
     }
 
     lines.forEach(line => {
-        const best = singleByteXOR(line);
+        const toBuf = Buffer.from(line, "hex");
+        const best = singleByteXOR(toBuf);
         if (best.score > bestOverall.score) {
             bestOverall.score = best.score;
             bestOverall.res = best.res;
+            bestOverall.key = best.key;
         }
     });
     return bestOverall;
@@ -108,27 +91,79 @@ export const repeatingKeyXOR = (str, key) => {
     return result;
 };
 
+const decimalToBits = (dec) => dec.toString(2).padStart(8, "0");
+
 export const hammingDistance = (str1, str2) => {
-    let distance = 0;
-    const toBit1 = stringToBits(str1);
-    const toBit2 = stringToBits(str2);
-    for (let i=0; i<toBit1.length; i++) {
-        if (toBit1[i] != toBit2[i]) distance++;
+    if (str1.length != str2.length) throw new Error("HAMMING_DISTANCE.UNEQUAL_LENGTHS");
+    let tot = 0;
+    for (let i = 0; i < str1.length; i++) {
+        const xor = str1[i] ^ str2[i];
+        const toBits = decimalToBits(xor);
+        const chars = Array.from(toBits);
+        tot += chars.filter(bit => bit == "1").length;
     }
-    return distance;
+    return tot;
+};
+
+export const bufInChunks = (buf, len) => {
+    const chunks = [];
+    let chunksNumber = 0;
+    while (chunksNumber + len <= buf.length) {
+        const chunk = buf.slice(chunksNumber, chunksNumber + len);
+        chunks.push(chunk);
+        chunksNumber += len;
+    }
+    return chunks;
+};
+
+export const hammingDistanceBetweenBuffers = (chunks) => {
+    if (chunks.length % 2 == 1) chunks.pop();
+    let tot = 0;
+    let iterations = 0;
+    while (chunks.length > 1) {
+        const elements = chunks.splice(0, 2);
+        const partial = hammingDistance(...elements);
+        tot += partial;
+        iterations++;
+    }
+    return tot / iterations;
 };
 
 export const transposeBlocks = (blocks) => {
     const transposed = [];
-    const partials = {};
-    for (const block of blocks) {
-        for (let i=0; i<block.length; i++) {
-            if (!partials[i]) partials[i] = block[i];
-            else partials[i] += block[i];
+    for (let i = 0; i < blocks[0].length; i++) {
+        const partial = [];
+        for (let j = 0; j < blocks.length; j++)
+            partial.push("0");
+        transposed.push(partial);
+    }
+    for (let i = 0; i < blocks.length; i++) {
+        for (let j = 0; j < blocks[i].length; j++) {
+            transposed[j][i] = (blocks[i][j]).toString(16).padStart(2, "0");
         }
     }
-    for (const partial of Object.keys(partials)) {
-        transposed.push(partials[partial]);
+    for (let i = 0; i < transposed.length; i++) {
+        transposed[i] = Buffer.from(transposed[i].join(""), "hex");
+    }
+
+    return transposed;
+};
+
+export const transposeResults = (results) => {
+    const transposed = [];
+    for (let i = 0; i < results[0].length; i++) {
+        const partial = [];
+        for (let j = 0; j < results.length; j++)
+            partial.push("0");
+        transposed.push(partial);
+    }
+    for (let i = 0; i < results.length; i++) {
+        for (let j = 0; j < results[i].length; j++) {
+            transposed[j][i] = (results[i][j]);
+        }
+    }
+    for (let i = 0; i < transposed.length; i++) {
+        transposed[i] = transposed[i].join("");
     }
     return transposed;
 };
