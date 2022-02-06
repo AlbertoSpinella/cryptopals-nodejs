@@ -149,21 +149,9 @@ export const transposeBlocks = (blocks) => {
     return transposed;
 };
 
-export const transposeResults = (results) => {
-    const transposed = [];
-    for (let i = 0; i < results[0].length; i++) {
-        const partial = [];
-        for (let j = 0; j < results.length; j++)
-            partial.push("0");
-        transposed.push(partial);
-    }
-    for (let i = 0; i < results.length; i++) {
-        for (let j = 0; j < results[i].length; j++) {
-            transposed[j][i] = (results[i][j]);
-        }
-    }
-    for (let i = 0; i < transposed.length; i++) {
-        transposed[i] = transposed[i].join("");
-    }
-    return transposed;
+export const expandKey = (key, len) => {
+    let res = "";
+    for (let i = 0; i < len; i++)
+        res += key[i % key.length];
+    return Buffer.from(res, "ascii");
 };
