@@ -4,6 +4,7 @@ import { set1Challenge3 } from "./set1/challenge3.js";
 import { set1Challenge4 } from "./set1/challenge4.js";
 import { set1Challenge5 } from "./set1/challenge5.js";
 import { set1Challenge6 } from "./set1/challenge6.js";
+import { set1Challenge7 } from "./set1/challenge7.js";
 
 const set1 = () => {
     const challenge = process.argv.slice(2)[0];
@@ -28,8 +29,11 @@ const set1 = () => {
         case "6":
             set1Challenge6();
             break;
+        case "7":
+            set1Challenge7();
+            break;
         default:
-            throw new Error("Invalid challenge number.\nValid input:\n1\n2\n3\n4\n5\n6\n");
+            throw new Error("Invalid challenge number.\nValid input:\n1\n2\n3\n4\n5\n6\n7\n");
     }
 };
 

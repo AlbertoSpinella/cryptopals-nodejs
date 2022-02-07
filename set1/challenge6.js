@@ -5,16 +5,9 @@ import {
     hammingDistanceBetweenBuffers,
     transposeBlocks,
     singleByteXOR,
-    expandKey
+    expandKey,
+    XORBetweenBuffers
 } from "../libs/utils.js";
-
-
-const XORBetweenBuffers = (plain, key) => {
-    let result = "";
-    for (let i = 0; i < plain.length; i++)
-        result += (plain[i] ^ key[i]).toString(16).padStart(2, "0");
-    return Buffer.from(result, "hex").toString("ascii");
-}
 
 export const set1Challenge6 = async () => {
     const base64 = await fs.readFile("./set1/6.txt", "ascii");

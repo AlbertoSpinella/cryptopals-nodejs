@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 const frequencies = {
     'a': 0.08167, 'b': 0.01492, 'c': 0.02782, 'd': 0.04253,
     'e': 0.12702, 'f': 0.02228, 'g': 0.02015, 'h': 0.06094,
@@ -154,4 +156,19 @@ export const expandKey = (key, len) => {
     for (let i = 0; i < len; i++)
         res += key[i % key.length];
     return Buffer.from(res, "ascii");
+};
+
+export const XORBetweenBuffers = (plain, key) => {
+    let result = "";
+    for (let i = 0; i < plain.length; i++)
+        result += (plain[i] ^ key[i]).toString(16).padStart(2, "0");
+    return Buffer.from(result, "hex").toString("ascii");
+};
+
+export const AESDecryptECB = (ciphertext, key) => {
+    const cipher = crypto.createDecipheriv("aes-128-ecb", key, "");
+    let decrypted = cipher.update(ciphertext);
+    decrypted = Buffer.concat([decrypted, cipher.final()]);
+
+    return decrypted.toString("ascii");
 };

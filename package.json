@@ -10,7 +10,8 @@
     "s1-c3": "node set1.js 3",
     "s1-c4": "node set1.js 4",
     "s1-c5": "node set1.js 5",
-    "s1-c6": "node set1.js 6"
+    "s1-c6": "node set1.js 6",
+    "s1-c7": "node set1.js 7"
   },
   "author": "AlbertoSpinella",
   "dependencies": {}
